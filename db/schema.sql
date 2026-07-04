@@ -157,3 +157,21 @@ CREATE TABLE financial_ratios (
     PRIMARY KEY (company_id, year),
     FOREIGN KEY (company_id) REFERENCES companies(id)
 );
+CREATE TABLE IF NOT EXISTS peer_percentiles (
+    company_id TEXT,
+    peer_group_name TEXT,
+    metric TEXT,
+    value REAL,
+    percentile_rank REAL,
+    year TEXT,
+    PRIMARY KEY (company_id, peer_group_name, metric, year)
+);
+
+DROP TABLE IF EXISTS peer_groups;
+
+CREATE TABLE peer_groups (
+    company_id TEXT,
+    peer_group_name TEXT,
+    benchmark_company TEXT,
+    FOREIGN KEY (company_id) REFERENCES companies(id)
+);

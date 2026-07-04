@@ -21,6 +21,7 @@ LOAD_ORDER = [
     "stock_prices",
     "market_cap",
     "financial_ratios",
+    "peer_groups",
 ]
 
 
