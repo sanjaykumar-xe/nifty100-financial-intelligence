@@ -66,6 +66,8 @@ SELECT
     cf.net_cash_flow,
 
     c.face_value,
+    c.roe_percentage,
+    c.roce_percentage,
     s.broad_sector
 FROM profitandloss p
 LEFT JOIN balancesheet b
@@ -90,15 +92,35 @@ for _, row in df.iterrows():
 
     npm = net_profit_margin(row["net_profit"], row["sales"])
     opm = operating_profit_margin(row["operating_profit"], row["sales"])
-    roe = return_on_equity(row["net_profit"], row["equity_capital"], row["reserves"])
+    roe = return_on_equity(
+        row["net_profit"],
+        row["equity_capital"],
+        row["reserves"]
+    )
+    # Reject impossible ROE values, fall back to trusted static value
+    if pd.isna(roe) or roe < 0 or roe > 100:
+        fallback = row["roe_percentage"]
+        roe = fallback if pd.notna(fallback) and 0 <= fallback <= 100 else None
+
     roce = return_on_capital_employed(
         row["operating_profit"],
         row["depreciation"],
         row["equity_capital"],
         row["reserves"],
-        row["borrowings"],
+        row["borrowings"]
     )
-    roa = return_on_assets(row["net_profit"], row["total_assets"])
+    if pd.isna(roce) or roce < 0 or roce > 100:
+        fallback = row["roce_percentage"]
+        roce = fallback if pd.notna(fallback) and 0 <= fallback <= 100 else None
+
+
+
+    roa = return_on_assets(
+       row["net_profit"],
+       row["total_assets"]
+    )
+
+
 
     de = debt_to_equity(row["borrowings"], row["equity_capital"], row["reserves"])
     high_de = high_leverage_flag(de, row["broad_sector"])
@@ -171,6 +193,37 @@ for _, row in df.iterrows():
     })
 
 ratios = pd.DataFrame(results)
+
+
+# Post-process: flag ROE/ROCE as outliers if they deviate too far from
+# the company's own historical calculated median (catches cases like
+# corporate actions distorting equity base in a specific year)
+for col, fallback_col in [
+    ("return_on_equity_pct", "roe_percentage"),
+    ("return_on_capital_employed_pct", "roce_percentage")
+]:
+    ratios[col] = pd.to_numeric(ratios[col], errors="coerce")
+
+    for company_id, group in ratios.groupby("company_id"):
+        vals = group[col].dropna()
+        if len(vals) < 3:
+            continue
+        median = vals.median()
+        if median <= 0:
+            continue
+
+        outlier_mask = (
+            (ratios["company_id"] == company_id) &
+            (ratios[col].notna()) &
+            ((ratios[col] > median * 2.5) | (ratios[col] < median * 0.4))
+        )
+
+        if outlier_mask.any():
+            fallback_val = df.loc[df["company_id"] == company_id, fallback_col].iloc[0]
+            if pd.notna(fallback_val) and 0 <= fallback_val <= 100:
+                ratios.loc[outlier_mask, col] = fallback_val
+            else:
+                ratios.loc[outlier_mask, col] = None
 
 source = df[["company_id", "year", "year_num", "sales", "net_profit", "eps"]].copy()
 source = source.dropna(subset=["year_num"])
