@@ -158,3 +158,142 @@ Produces:
 
 \- `valuation\_summary.xlsx` verified at 92 rows with all required columns; `valuation\_flags.csv` produced 44 flagged companies.
 
+
+# Nifty 100 Financial Intelligence Platform
+
+An AI-powered financial analysis platform that analyzes Nifty 100 companies using financial metrics, valuation analysis, sector intelligence, and portfolio insights.
+
+## Features
+
+### Financial Analysis
+- Company financial profiling
+- Profitability analysis
+- ROE and ROCE analysis
+- Cash flow evaluation
+- Valuation analysis
+
+### Intelligence Reports
+
+Automatically generates:
+
+- Company investment tearsheets
+- Sector intelligence reports
+- Portfolio summary reports
+
+
+## Project Structure
+nifty100-financial-intelligence/
+
+├── data/
+│ ├── raw/
+│ └── processed/
+
+├── src/
+│ ├── analytics/
+│ │ ├── monte_carlo_portfolio.py
+│ │ └── portfolio_recommendation_engine.py
+│ │
+│ └── reports/
+│ ├── tearsheet.py
+│ ├── sector_report.py
+│ └── portfolio_summary.py
+
+├── reports/
+│ ├── sector_report.pdf
+│ ├── portfolio_summary.pdf
+│ └── tearsheets/
+
+└── requirements.txt
+
+
+
+## Generated Reports
+
+### Company Tearsheets
+
+Provides:
+
+- Company profile
+- Financial metrics
+- Valuation information
+- Investment strengths
+- Risks
+
+
+### Sector Intelligence Report
+
+Provides:
+
+- Sector comparison
+- Number of companies
+- Average ROE
+- Average ROCE
+- Profitability analysis
+
+
+### Portfolio Summary
+
+Provides:
+
+- Overall portfolio statistics
+- Average financial metrics
+- Top companies by ROE
+
+
+## Installation
+
+Clone repository:
+
+```bash
+git clone https://github.com/sanjaykumar-xe/nifty100-financial-intelligence.git
+
+Create environment:
+
+python -m venv venv
+
+Activate:
+
+Windows:
+
+venv\Scripts\activate
+
+Install dependencies:
+
+pip install -r requirements.txt
+Generate Reports
+
+Company tearsheet:
+
+python src/reports/tearsheet.py
+
+Sector report:
+
+python src/reports/sector_report.py
+
+Portfolio summary:
+
+python src/reports/portfolio_summary.py
+Tech Stack
+Python
+Pandas
+NumPy
+ReportLab
+Financial Data Analysis
+Data Visualization
+Author
+
+Sanjay Kumar
+B.Tech Artificial Intelligence & Data Science
+
+
+Save and close.
+
+---
+
+# Step 5: Check Git status
+
+Run:
+
+```bash
+git status
+
