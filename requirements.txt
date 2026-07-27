@@ -42,7 +42,7 @@ pydeck==0.9.3
 pyparsing==3.3.2
 python-dateutil==2.9.0.post0
 python-multipart==0.0.32
-pywin32==312
+#pywin32==312
 PyYAML==6.0.3
 referencing==0.37.0
 reportlab==5.0.0
